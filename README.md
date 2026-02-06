@@ -20,12 +20,23 @@ Object detection system based on **YOLOv5n** for ESP32-CAM, designed as a naviga
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Training | Ultralytics YOLO, PyTorch |
-| Inference | OpenCV DNN, ONNX |
-| Target | ESP32-CAM |
-| Language | Python 3.10+ |
+### 🖥️ Hardware
+- **ESP32-CAM**: The main microcontroller for deployment and inference (AI-on-Edge).
+- **PC / GPU**: Used for model training and dataset processing (NVIDIA GPU recommended for faster training).
+- **Camera Module**: OV2640 (standard ESP32-CAM module).
+
+### 🧠 AI & Machine Learning
+- **YOLOv5n (Ultralytics)**: Nano version of YOLOv5 architecture, optimized for speed and low resources.
+- **PyTorch**: The deep learning framework backend used for training the model.
+- **ONNX (Open Neural Network Exchange)**: Format used for interoperability and deploying the model to edge devices.
+
+### 🛠️ Software & Libraries
+- **Python 3.10+**: Core programming language for training and data scripts.
+- **OpenCV (cv2)**: Image processing, resizing, and real-time visualization.
+- **NumPy & Pandas**: Data manipulation and dataset handling.
+- **Matplotlib & Seaborn**: Visualization of dataset distribution and training metrics.
+- **Jupyter Notebook**: Interactive environment for training workflow.
+- **Git**: Version control system.
 
 ---
 
