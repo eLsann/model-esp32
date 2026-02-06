@@ -1,6 +1,6 @@
-# 🦯 Smart Cane Object Detection - ESP32-CAM
+# Smart Cane Object Detection - ESP32-CAM
 
-Sistem deteksi objek berbasis **YOLOv5n** untuk ESP32-CAM sebagai alat bantu navigasi tunanetra.
+Object detection system based on **YOLOv5n** for ESP32-CAM, designed as a navigation aid for the visually impaired.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
 ![YOLO](https://img.shields.io/badge/YOLO-v5n-green)
@@ -8,20 +8,20 @@ Sistem deteksi objek berbasis **YOLOv5n** untuk ESP32-CAM sebagai alat bantu nav
 
 ---
 
-## 📋 Fitur
+## Features
 
-- ✅ **6 Class Detection**: dinding, kendaraan_parkir, orang, pintu, pohon, tiang
-- ✅ **Realtime Detection**: ~30 FPS pada PC, ~5 FPS pada ESP32
-- ✅ **Auto-Annotation**: Anotasi otomatis dari struktur folder
-- ✅ **Dataset Balancing**: 150 gambar/class dengan augmentasi
-- ✅ **ONNX Export**: Model ~10MB untuk embedded deployment
+- **6 Class Detection**: dinding (wall), kendaraan_parkir (parked vehicle), orang (person), pintu (door), pohon (tree), tiang (pole)
+- **Realtime Detection**: ~30 FPS on PC, ~5 FPS on ESP32
+- **Auto-Annotation**: Automatic annotation from folder structure
+- **Dataset Balancing**: 150 images/class with augmentation
+- **ONNX Export**: Optimized ~10MB model for embedded deployment
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-| Komponen | Teknologi |
-|----------|-----------|
+| Component | Technology |
+|-----------|------------|
 | Training | Ultralytics YOLO, PyTorch |
 | Inference | OpenCV DNN, ONNX |
 | Target | ESP32-CAM |
@@ -29,86 +29,86 @@ Sistem deteksi objek berbasis **YOLOv5n** untuk ESP32-CAM sebagai alat bantu nav
 
 ---
 
-## 📊 Pipeline Flow
+## Pipeline Flow
 
 ```mermaid
 flowchart LR
-    A["📁 Dataset<br/>per Class"] --> B["📝 Auto<br/>Annotation"]
-    B --> C["⚖️ Balancing<br/>150/class"]
-    C --> D["🎯 Training<br/>YOLOv5n"]
-    D --> E["📦 Export<br/>ONNX"]
-    E --> F["🚀 Deploy<br/>ESP32"]
+    A["Dataset<br/>per Class"] --> B["Auto<br/>Annotation"]
+    B --> C["Balancing<br/>150/class"]
+    C --> D["Training<br/>YOLOv5n"]
+    D --> E["Export<br/>ONNX"]
+    E --> F["Deploy<br/>ESP32"]
 ```
 
 ---
 
-## 📊 Training Flow Detail
+## Training Flow Detail
 
 ```mermaid
 flowchart TD
-    subgraph INPUT["📁 INPUT"]
-        A[("Gambar per Folder")]
+    subgraph INPUT["INPUT"]
+        A[("Images per Folder")]
     end
 
-    subgraph PROCESS["🔄 PROCESSING"]
+    subgraph PROCESS["PROCESSING"]
         B["Auto-Annotation"]
         C{"Count >= 150?"}
         D["Undersample"]
         E["Oversample + Aug"]
-        F["Split 85/15"]
+        F["Split 70/20/10"]
     end
 
-    subgraph TRAINING["🎯 TRAINING"]
-        G["YOLOv5n 50 Epochs"]
-        H["Evaluate mAP"]
+    subgraph TRAINING["TRAINING"]
+        G["YOLOv5n 100 Epochs"]
+        H["Evaluate Test Set"]
         I["Export ONNX"]
     end
 
     A --> B --> C
-    C -->|Ya| D --> F
-    C -->|Tidak| E --> F
+    C -->|Yes| D --> F
+    C -->|No| E --> F
     F --> G --> H --> I
 ```
 
 ---
 
-## 📊 Realtime Detection Flow
+## Realtime Detection Flow
 
 ```mermaid
 flowchart LR
-    A["📷 Camera"] --> B["Resize 96x96"]
+    A["Camera"] --> B["Resize 96x96"]
     B --> C["ONNX Inference"]
     C --> D{"Detected?"}
-    D -->|Ya| E["🟢 ACTIVE<br/>Draw BBox"]
-    D -->|Tidak| F["⚪ IDLE"]
+    D -->|Yes| E["ACTIVE<br/>Draw BBox"]
+    D -->|No| F["IDLE"]
 ```
 
 ---
 
-## 📊 Feedback System (Tongkat)
+## Feedback System (Smart Cane)
 
 ```mermaid
 flowchart TD
     A["Detection"] --> B{"Priority?"}
-    B -->|🔴 High<br/>orang, tiang| C["Alert Kuat"]
-    B -->|🟡 Medium<br/>kendaraan, pohon| D["Alert Sedang"]
-    B -->|🟢 Low<br/>pintu| E["Info"]
-    B -->|⚪ Skip<br/>dinding| F["Ignore"]
+    B -->|High<br/>person, pole| C["Strong Alert"]
+    B -->|Medium<br/>vehicle, tree| D["Medium Alert"]
+    B -->|Low<br/>door| E["Info"]
+    B -->|Skip<br/>wall| F["Ignore"]
     
     C --> G{"Position X?"}
     D --> G
-    G -->|Kiri| H["Vibrate LEFT"]
-    G -->|Kanan| I["Vibrate RIGHT"]
-    G -->|Tengah| J["Vibrate CENTER"]
+    G -->|Left| H["Vibrate LEFT"]
+    G -->|Right| I["Vibrate RIGHT"]
+    G -->|Center| J["Vibrate CENTER"]
 ```
 
 ---
 
-## 📁 Struktur Folder
+## Folder Structure
 
 ```
 my_dataset/
-├── dataset/                    # Gambar per class
+├── dataset/                    # Raw images per class
 │   ├── dinding/
 │   ├── kendaraan_parkir/
 │   ├── orang/
@@ -116,47 +116,47 @@ my_dataset/
 │   ├── pohon/
 │   └── tiang/
 ├── model_training/
-│   ├── train_yolo.ipynb       # Notebook training
-│   ├── train_yolo.py
-│   └── balance_dataset.py
+│   ├── train_yolo.ipynb       # Training notebook
+│   ├── train_yolo.py          # Training script
+│   └── balance_dataset.py     # Dataset processing
 ├── testing_app/
-│   └── test_yolo_realtime.py  # Webcam testing
+│   └── test_yolo_realtime.py  # Webcam testing script
 └── yolo_output/
     └── yolo_training/weights/best.onnx
 ```
 
 ---
 
-## 🚀 Cara Menjalankan
+## Usage
 
-### Training
+### Training Workflow
 ```bash
 # Via Notebook (recommended)
 jupyter notebook model_training/train_yolo.ipynb
 
-# Via Python
+# Via Python Scripts
 python model_training/balance_dataset.py
 python model_training/train_yolo.py
 ```
 
-### Testing Realtime
+### Realtime Testing
 ```bash
 python testing_app/test_yolo_realtime.py
 ```
 
-**Kontrol:**
+**Controls:**
 - `Q` = Quit
-- `D` = Toggle deteksi dinding
+- `D` = Toggle wall detection
 
 ---
 
-## 📈 Performance
+## Performance
 
 | Metric | Value |
 |--------|-------|
 | mAP50 | **93.4%** |
 | mAP50-95 | 89.4% |
-| Precision | 95%+ |
-| Recall | 90%+ |
+| Precision | > 95% |
+| Recall | > 90% |
 | Model Size | ~10 MB |
 | Input Size | 96×96 |
