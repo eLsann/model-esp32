@@ -1,0 +1,6 @@
+dinding
+kendaraan_parkir
+orang
+pintu
+pohon
+tiang
