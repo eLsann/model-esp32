@@ -1,0 +1,17 @@
+# Ignore large files and unnecessary folders
+*.pyc
+__pycache__/
+.ipynb_checkpoints/
+*.onnx
+*.pt
+*.pth
+
+# Dataset folders (too large for git)
+yolo_dataset/
+yolo_output/
+annotations/
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
